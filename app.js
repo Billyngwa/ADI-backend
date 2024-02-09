@@ -34,8 +34,6 @@ app.get('/status', (req, res) => {
     const status = {
         "status": "Running..."
     };
-
-    // res.json('hello world');
     res.send(status);
 });
 

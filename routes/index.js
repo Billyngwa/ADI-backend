@@ -7,13 +7,15 @@ const authentication = require("../controllers/authentication");
 
 
 router.get("/",controls.getAllUsers);
+
 router.get("/:id",controls.getUserById);
+
 router.delete("/",controls.deleteAllUsers);
+
 router.delete("/:id",controls.deleteUserById);
 
 router.post("/signup",authentication.register);
 
 router.post("/signin", authChecker.checkUser, authentication.signIn);
-
 
 module.exports = router;
