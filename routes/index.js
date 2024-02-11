@@ -16,6 +16,9 @@ router.delete("/:id",controls.deleteUserById);
 
 router.post("/signup",authentication.register);
 
+router.post("/forgot-password",authentication.forgotPassword);
+
+
 router.post("/signin", authChecker.checkUser, authentication.signIn);
 
 module.exports = router;

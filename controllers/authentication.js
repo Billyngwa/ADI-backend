@@ -26,22 +26,7 @@ const webTokenGen = (email, id) => {
     )
 }
 
-const  validateUser = async (email) => {
-    const userObject = await user.findOne({ email: email });
-    if (!userObject) {
-        return {
-            status: 400,
-            data: null,
-            message: { message: "User not found", }
-        }
-    }
-    return {
-        status: 200,
-        data: userObject,
-        message: { message: "User exist" }
-    }
-}
-async function validateUserEmail(email) {
+const validateUser = async (email) => {
     const userObject = await user.findOne({ email: email });
     if (!userObject) {
         return {
@@ -69,7 +54,7 @@ const authentication = {
 
             password = encryptPassword(password);
 
-                    //CHECKING IF USER EXIST OR NOT
+            //CHECKING IF USER EXIST OR NOT
             const ted = await validateUser(email);
             if (ted.status === 200) {
                 res.status(409).json(ted.message);
@@ -80,15 +65,15 @@ const authentication = {
 
                 //generating a webtoken for user
                 const accessToken = { token: webTokenGen(email, created["_id"]) };
-                
+
                 res.status(201).json(accessToken);
 
                 mailService.send(`${created.email}`, "Welcome to ADI", `Hi ${created["firstName"]
-            },👋 you just joined our incubator pleased to see you with us 😊. Welcome on board.`);
+                    },👋 you just joined our incubator pleased to see you with us 😊. Welcome on board.`);
             }
 
         } catch (error) {
-            return res.status(500).json({ success: false, message:error.message })
+            return res.status(500).json({ success: false, message: error.message })
 
         }
 
@@ -112,7 +97,7 @@ const authentication = {
             }
 
             const accessToken = { token: webTokenGen(email, ted.data["_id"]) };
-           
+
             res.status(ted.status).json(accessToken);
 
         } catch (error) {
@@ -122,7 +107,41 @@ const authentication = {
 
 
     },
-    forgotPassword: (req,res) => {
+    forgotPassword: async (req, res) => {
+        const { email } = req.body;
+        try {
+            if (!email) {
+                return {
+                    status: false,
+                    message: "email required"
+                }
+            }
+            const ted = await validateUser(email);
+
+            if (ted.status === 400) return ted.message;
+            const otp = Math.floor(1000 + Math.random() * 9000);
+
+            const otpExpier = new Date();
+            otpExpier.setMinutes(otpExpier.getMinutes() + 1);
+            const updated = await user.findOneAndUpdate(
+                { email: email },
+                { $set: { otp: otp, expiresIn: otpExpier } },
+                { returnNewDocument: true }
+
+
+            )
+            console.log(updated);
+
+            mailService.send(updated.email, "Password Reset Token", `Here is your password reset token ${otp}`)
+            res.status(200).json({
+                status: true,
+                message: "token sent"
+            })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+
+        }
+
 
     }
 };

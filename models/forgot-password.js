@@ -7,3 +7,5 @@ const forgotPassword = new schema({
        require:true
     }
 })
+
+module.exports = forgotPassword;
