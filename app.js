@@ -10,7 +10,6 @@ dotenv.config();
 const app = express();
 
 const port = process.env.PORT;
-console.log(process.env.URL);
 
 mongoose.connect(process.env.URL)
     .then(() => {
@@ -29,7 +28,6 @@ app.use(helmet());
 
 
 app.get('/status', (req, res) => {
-    // res.setHeader("content-type","text/plain");
     res.setHeader("content-type", "application/json");
     const status = {
         "status": "Running..."

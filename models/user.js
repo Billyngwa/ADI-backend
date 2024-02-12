@@ -9,8 +9,17 @@ const User = new schema({
         type: String,
         require: false,
         default: 'USER'
+    },
+    otp:{
+        type:Number,
+        require:false,
+        default:0
+    },
+    otpExpire:{
+        type:String,
+        require:false,
+        default:0
     }
-
 },
 {
     timestamps:true

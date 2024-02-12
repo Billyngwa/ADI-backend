@@ -11,7 +11,15 @@ const encryptPassword = (password) => {
     return hash.digest('hex');
 
 }
-
+const getDate = () => {
+    let today = new Date();
+    let time = today.getHours() + ":" + today.setMinutes(today.getMinutes()+3) + ":" + today.getSeconds();
+    let date = today.toUTCString().slice(0, 16);
+    return {
+        'time': time,
+        'date': date
+    }
+}
 
 const webTokenGen = (email, id) => {
     return jwt.sign(
@@ -122,17 +130,15 @@ const authentication = {
             const otp = Math.floor(1000 + Math.random() * 9000);
 
             const otpExpier = new Date();
-            otpExpier.setMinutes(otpExpier.getMinutes() + 1);
+         let expir = otpExpier.setMinutes(otpExpier.getMinutes() + 3);
+        //    let expir = getDate().time
             const updated = await user.findOneAndUpdate(
                 { email: email },
-                { $set: { otp: otp, expiresIn: otpExpier } },
-                { returnNewDocument: true }
-
-
+                { $set: { "otp": otp, "otpExpire": expir } },
+                { returnNewDocument: false }
             )
-            console.log(updated);
 
-            mailService.send(updated.email, "Password Reset Token", `Here is your password reset token ${otp}`)
+            await mailService.send(updated.email, "Password Reset Token", `Here is your password reset token ${updated.otp}`)
             res.status(200).json({
                 status: true,
                 message: "token sent"
@@ -143,7 +149,8 @@ const authentication = {
         }
 
 
-    }
+    },
+    
 };
 
 module.exports = authentication;
