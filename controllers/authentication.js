@@ -132,18 +132,24 @@ const authentication = {
             const otpExpier = new Date();
             let expir = otpExpier.setMinutes(otpExpier.getMinutes() + 3);
             //    let expir = getDate().time
-            const updated = await user.findOneAndUpdate(
+            user.findOneAndUpdate(
                 { email: email },
                 { $set: { "otp": otp, "otpExpire": expir } },
-                { returnNewDocument: false }
-            )
-            console.log(updated);
-            console.log(Date.now());
-            await mailService.send(updated.email, "Password Reset Token", `Here is your password reset token ${updated.otp}`)
-            res.status(200).json({
-                status: true,
-                message: "token sent"
+                { returnNewDocument: true }
+            ).then(updated => {
+
+                console.log(updated);
+                console.log(Date.now());
+
+                mailService.send(updated.email, "Password Reset Token", `Here is your password reset token ${otp}`)
+                
+                res.status(200).json({
+                    status: true,
+                    message: "token sent"
+                })
             })
+
+
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
 
@@ -170,9 +176,8 @@ const authentication = {
             }
 
             const obj = await user.findOne({ otp: token });
-            console.log(obj);
-          
-            // console.log(obj, typeof (Number(token)), Number(token), typeof (obj.otp), obj.otp);
+
+            console.log(obj, typeof (Number(token)), Number(token), typeof (obj.otp), obj.otp);
             if (obj.otpExpire < Date.now()) {
                 return res.json({
                     status: false,
@@ -189,11 +194,10 @@ const authentication = {
 
             const updated = await user.findOneAndUpdate(
                 { otp: token },
-                { $set: { "paasword": password } },
-                { returnNewDocument: false }
+                { $set: { "password": encryptPassword(password) } },
+                { returnNewDocument: true }
             )
-            console.log(updated);
-            await mailService.send(updated.email, "Password Recovery", `Dear User Your password has beenresseted with success use it to login henceforth`)
+            await mailService.send(updated.email, "Password Reset", `Dear User Your password has been resseted with success use it to login henceforth`)
             res.status(200).json({
                 status: true,
                 message: "Password resseted successfully"
