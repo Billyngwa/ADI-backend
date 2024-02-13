@@ -13,7 +13,7 @@ const encryptPassword = (password) => {
 }
 const getDate = () => {
     let today = new Date();
-    let time = today.getHours() + ":" + today.setMinutes(today.getMinutes()+3) + ":" + today.getSeconds();
+    let time = today.getHours() + ":" + today.setMinutes(today.getMinutes() + 3) + ":" + today.getSeconds();
     let date = today.toUTCString().slice(0, 16);
     return {
         'time': time,
@@ -130,14 +130,15 @@ const authentication = {
             const otp = Math.floor(1000 + Math.random() * 9000);
 
             const otpExpier = new Date();
-         let expir = otpExpier.setMinutes(otpExpier.getMinutes() + 3);
-        //    let expir = getDate().time
+            let expir = otpExpier.setMinutes(otpExpier.getMinutes() + 3);
+            //    let expir = getDate().time
             const updated = await user.findOneAndUpdate(
                 { email: email },
                 { $set: { "otp": otp, "otpExpire": expir } },
                 { returnNewDocument: false }
             )
-
+            console.log(updated);
+            console.log(Date.now());
             await mailService.send(updated.email, "Password Reset Token", `Here is your password reset token ${updated.otp}`)
             res.status(200).json({
                 status: true,
@@ -150,7 +151,58 @@ const authentication = {
 
 
     },
-    
+    resetToken: async (req, res) => {
+        let { password, confirmPassword, token } = req.body;
+        try {
+
+
+            if (!token) {
+                return res.json({
+                    status: false,
+                    message: "No token Provided"
+                })
+            }
+            if (password !== confirmPassword) {
+                return res.json({
+                    status: false,
+                    message: "passwords do not match"
+                })
+            }
+
+            const obj = await user.findOne({ otp: token });
+            console.log(obj);
+          
+            // console.log(obj, typeof (Number(token)), Number(token), typeof (obj.otp), obj.otp);
+            if (obj.otpExpire < Date.now()) {
+                return res.json({
+                    status: false,
+                    message: "Token expired"
+                })
+            }
+
+            if (obj.otp !== Number(token)) {
+                return res.json({
+                    status: false,
+                    message: "Invalid Token"
+                })
+            }
+
+            const updated = await user.findOneAndUpdate(
+                { otp: token },
+                { $set: { "paasword": password } },
+                { returnNewDocument: false }
+            )
+            console.log(updated);
+            await mailService.send(updated.email, "Password Recovery", `Dear User Your password has beenresseted with success use it to login henceforth`)
+            res.status(200).json({
+                status: true,
+                message: "Password resseted successfully"
+            })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+
+        }
+    }
 };
 
 module.exports = authentication;

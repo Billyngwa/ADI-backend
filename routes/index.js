@@ -18,6 +18,7 @@ router.post("/signup",authentication.register);
 
 router.post("/forgot-password",authentication.forgotPassword);
 
+router.post("/forgot-password/reset",authentication.resetToken);
 
 router.post("/signin", authChecker.checkUser, authentication.signIn);
 
