@@ -1,7 +1,5 @@
 const user = require("../models/user");
 const crypto = require("crypto");
-const { default: mongoose } = require("mongoose");
-const model = require("../models/user");
 const jwt = require("jsonwebtoken");
 const mailService = require("../utils/smtp");
 
@@ -90,8 +88,9 @@ const authentication = {
 
     },
     signIn: async (req, res) => {
+        let { email, password } = req.body;
+
         try {
-            let { email, password } = req.body;
             if (!email || !password) {
                 return res.status(400).json({ success: false, message: "corrupted payload" });
 
@@ -122,7 +121,7 @@ const authentication = {
                 return {
                     status: false,
                     message: "email required"
-                }
+                };
             }
             const ted = await validateUser(email);
 
@@ -130,8 +129,7 @@ const authentication = {
             const otp = Math.floor(1000 + Math.random() * 9000);
 
             const otpExpier = new Date();
-            let expir = otpExpier.setMinutes(otpExpier.getMinutes() + 3);
-            //    let expir = getDate().time
+            let expir = otpExpier.setMinutes(otpExpier.getMinutes() + 5);
             user.findOneAndUpdate(
                 { email: email },
                 { $set: { "otp": otp, "otpExpire": expir } },

@@ -57,7 +57,7 @@ const authChecker = {
 
         if (!user) {
             res.status(403).json({
-                message: `${user} not found`
+                message: `Invalid Login credentials`
             })
             return
         }
