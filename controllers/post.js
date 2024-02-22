@@ -34,7 +34,7 @@ const postFxn = {
     updatePost:async (req,res) => {
         const id = req.params.id
         try {
-            let {title,author,content,likes,shares,comments} = req.body;
+            let {title,content,likes,shares,comments} = req.body;
             const updatedPost = await post.findOneAndUpdate(
                 {_id:id},
                 {$set:{

@@ -4,6 +4,7 @@ const controls = require("../controllers/user");
 const authChecker = require("../middlewares/authMiddleWare");
 const authentication = require("../controllers/authentication");
 const post = require("../controllers/post");
+const news = require("../controllers/news");
 
 
 router.get("/",controls.getAllUsers); //Route to get all users from system ADI
@@ -33,5 +34,17 @@ router.get("/:id",post.getPostById); //Route to get particular post
 router.patch("/:id",post.updatePost); //Route to update a post by id
 
 router.delete("/:id",post.deletePost); //Route to delete a particular post by id
+
+/*
+ ******************************************************* End of post Routes ******************************
+*/
+
+router.post("/poster",news.createNews);// Route to create news
+
+router.get("/:id",news.getNewsById); //Route to get particular news
+
+router.patch("/:id",news.updateNews); //Route to update a news by id
+
+router.delete("/:id",news.deleteNews); //Route to delete a particular news by id
 
 module.exports = router;

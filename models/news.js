@@ -23,7 +23,7 @@ const News = new schema({
     require:false
    },
    comments:{
-    type:String,
+    type:[String],
     require:false
    }
 },

@@ -34,10 +34,31 @@ const newsFxn = {
     updateNews:async (req,res) => {
         const id = req.params.id;
         try {
-            const updatedNews = await post.findOneAndUpdate(
+            let {title,content,likes,shares,comments} = req.body;
+            const updatedNews = await news.findOneAndUpdate(
                 {_id:id},
-                {$set:{}}
+                {$set:{
+                    "title":title,
+                    "content":content,
+                    "likes":likes,
+                    "shares":shares,
+                    "comments":comments
+                }}
             )
+            res.status(201).json({
+                message:"post Updated",
+                data:updatedNews
+            })
+        } catch (error) {
+            res.status(500).json({message:error.message});
+
+        }
+    },
+    deleteNews: async (req,res) => {
+        const id = req.params.id;
+        try {
+            const deletedNews = await post.findByIdAndDelete(id)
+            res.json({message:deletedNews});
         } catch (error) {
             res.status(500).json({message:error.message});
 

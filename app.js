@@ -6,6 +6,8 @@ const dotenv = require('dotenv');
 const router = require('./routes/index');
 const authRouter = require('./routes/index');
 const postRoute = require("./routes/index");
+const newsRoute = require("./routes/index");
+
 nodemailer = require("nodemailer");
 dotenv.config();
 const app = express();
@@ -24,7 +26,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/auth', authRouter);
 app.use('/user', router);
-app.use("/posts?")
+app.use("/posts?",postRoute);
+app.use("/news?",newsRoute)
 app.use(helmet());
 
 
