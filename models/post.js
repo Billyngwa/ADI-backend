@@ -7,11 +7,11 @@ const Posts = new schema({
         require:true
     },
     author:{
-        $type:mongoose.Schema.Type.ObjectId,
-        ref:"Users"
+        type:mongoose.Schema.Types.ObjectId,
+        $ref:"Users"
     },
    content:{
-    type:Object,
+    type:[Object],
     require:false
    },
    likes:{
@@ -23,7 +23,7 @@ const Posts = new schema({
     require:false
    },
    comments:{
-    type:String,
+    type:[String],
     require:false
    }
 },

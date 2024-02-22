@@ -34,10 +34,31 @@ const postFxn = {
     updatePost:async (req,res) => {
         const id = req.params.id
         try {
+            let {title,author,content,likes,shares,comments} = req.body;
             const updatedPost = await post.findOneAndUpdate(
                 {_id:id},
-                {$set:{}}
+                {$set:{
+                    "title":title,
+                    "content":content,
+                    "likes":likes,
+                    "shares":shares,
+                    "comments":comments
+                }}
             )
+            res.status(201).json({
+                message:"post Updated",
+                data:updatedPost
+            })
+        } catch (error) {
+            res.status(500).json({message:error.message});
+
+        }
+    },
+    deletePost: async (req,res) => {
+        const id = req.params.id;
+        try {
+            const deletedPost = await post.findByIdAndDelete(id)
+            res.json({message:deletedPost});
         } catch (error) {
             res.status(500).json({message:error.message});
 

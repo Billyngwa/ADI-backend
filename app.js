@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const router = require('./routes/index');
 const authRouter = require('./routes/index');
+const postRoute = require("./routes/index");
 nodemailer = require("nodemailer");
 dotenv.config();
 const app = express();
@@ -15,8 +16,7 @@ mongoose.connect(process.env.URL)
     .then(() => {
         console.log('connection successful');
     }).catch((error) => {
-        console.log('error occured');
-        console.log('Error: ' + error);
+        throw new Error(error.message);
     })
 
 app.use(cors());
@@ -24,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/auth', authRouter);
 app.use('/user', router);
+app.use("/posts?")
 app.use(helmet());
 
 
