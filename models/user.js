@@ -29,7 +29,7 @@ const User = new schema({
     },
     otpExpire:{
         type:Number,
-        require:false,
+        required:false,
         default:0
     }
 },
