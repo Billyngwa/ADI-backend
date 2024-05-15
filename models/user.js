@@ -3,33 +3,33 @@ const schema = mongoose.Schema;
 const User = new schema({
     firstName:{
         type:String,
-        require:true
+        required:true
     },
     lastName:{
         type:String,
-        require:true
+        required:true
     },
     email:{
         type:String,
-        require:true
+        required:true
     },
     password:{
         type:String,
-        require:true
+        required:true
     },
     role: {
         type: String,
-        require: false,
+        required: false,
         default: 'USER'
     },
     otp:{
         type:Number,
-        require:false,
+        required:false,
         default:0
     },
     otpExpire:{
         type:Number,
-        require:false,
+        required:false,
         default:0
     }
 },

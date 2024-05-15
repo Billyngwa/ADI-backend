@@ -1,22 +1,22 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
-const News = new schema({
-    title:{
+const Course = new schema({
+    courseTitle:{
         type:String,
         require:true
     },
     author:{
-        $type:mongoose.Schema.Type.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:"Users"
     },
    content:{
     type:String,
-    require:false
+    require:true
    },  
-    likes:{
+    courseCode:{
     type:Number,
-    require:false
+    require:true
    },
    shares:{
     type:Number,
@@ -31,4 +31,4 @@ const News = new schema({
     timestamps:true
 });
 
-module.exports = mongoose.model("News",News);
+module.exports = mongoose.model("News",Course);

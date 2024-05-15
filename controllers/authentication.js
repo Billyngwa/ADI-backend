@@ -9,6 +9,7 @@ const encryptPassword = (password) => {
     return hash.digest('hex');
 
 }
+
 const getDate = () => {
     let today = new Date();
     let time = today.getHours() + ":" + today.setMinutes(today.getMinutes() + 3) + ":" + today.getSeconds();
@@ -63,7 +64,7 @@ const authentication = {
             //CHECKING IF USER EXIST OR NOT
             const ted = await validateUser(email);
             if (ted.status === 200) {
-                res.status(409).json(ted.message);
+              return  res.status(409).json(ted.message);
             } else {
 
                 // creating a user in the database
@@ -83,10 +84,8 @@ const authentication = {
 
         }
 
-
-
-
     },
+
     signIn: async (req, res) => {
         let { email, password } = req.body;
 
@@ -105,7 +104,7 @@ const authentication = {
 
             const accessToken = { token: webTokenGen(email, ted.data["_id"]) };
 
-            res.status(ted.status).json(accessToken);
+            return   res.status(ted.status).json(accessToken);
 
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
@@ -158,8 +157,7 @@ const authentication = {
     resetToken: async (req, res) => {
         let { password, confirmPassword, token } = req.body;
         try {
-
-
+            
             if (!token) {
                 return res.json({
                     status: false,
